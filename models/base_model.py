@@ -27,14 +27,14 @@ class BaseModel:
         self.updated_at = datetime.now()
 
 
-    def __Str__(self):
+    def __str__(self):
         """
         Returns a string representation of the instance.
 
         Format: [<class name>] (<self.id>) <self.__dict__>
         """
 
-        return f"[<self.__class__.__name__>] (<self.id>) <self.__dict__>"
+        return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
 
 
     def save(self):
@@ -56,8 +56,9 @@ class BaseModel:
         """
 
         return {
-                **self.__dict__,
                 '__class__': self.__class__.__name__,
+                'id': self.id,
                 'created_at': self.created_at.isoformat(),
                 'updated_at': self.updated_at.isoformat()
+                **self.__dict__
                 }
