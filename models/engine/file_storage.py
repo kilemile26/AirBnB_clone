@@ -4,8 +4,10 @@ Module: file_storage
 Defines the FileStorage class.
 """
 
+import os
 import json
 from models.base_model import BaseModel
+from models.user import User
 
 class FileStorage:
     """
@@ -45,10 +47,19 @@ class FileStorage:
                 obj_dict = json.load(file)
                 for key, obj_data in obj_dict.items():
                     class_name, obj_id = key.split('.')
-                    obj = BaseModel(**obj_data)
-                    self.__objects[key] = obj
+                    # Check if the class is in the classes dictionary
+                    if class_name in self.classes:
+                        obj_class = self.classes[class_name]
+                        obj = obj_class(**obj_data)
+                        self.__objects[key] = obj
         except FileNotFoundError:
             pass
+
+    classes = {
+            'BaseModel': BaseModel,
+            'User': User
+            }
+
 
 # Create a unique FileStorage instance for the application
 storage = FileStorage()
