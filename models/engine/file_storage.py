@@ -8,6 +8,12 @@ import os
 import json
 from models.base_model import BaseModel
 from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
+
 
 class FileStorage:
     """
@@ -45,19 +51,24 @@ class FileStorage:
         try:
             with open(self.__file_path, 'r', encoding='utf-8') as file:
                 obj_dict = json.load(file)
-                for key, obj_data in obj_dict.items():
-                    class_name, obj_id = key.split('.')
+                for key, value in obj_dict.items():
+                    class_name = value.get("__class__", None)
                     # Check if the class is in the classes dictionary
                     if class_name in self.classes:
                         obj_class = self.classes[class_name]
-                        obj = obj_class(**obj_data)
+                        obj = obj_class(**value)
                         self.__objects[key] = obj
         except FileNotFoundError:
             pass
 
     classes = {
             'BaseModel': BaseModel,
-            'User': User
+            'User': User,
+            'Place': Place,
+            'State': State,
+            'City': City,
+            'Amenity': Amenity,
+            'Review': Review,
             }
 
 
