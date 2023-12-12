@@ -17,7 +17,8 @@ from models.review import Review
 
 class FileStorage:
     """
-    FileStorage class for serializing/deserializing instances to/from JSON file.
+    FileStorage class for serializing/deserializing
+    instances to/from JSON file.
     """
 
     __file_path = "file.json"
@@ -43,7 +44,6 @@ class FileStorage:
         obj_dict = {key: obj.to_dict() for key, obj in self.__objects.items()}
         with open(self.__file_path, 'w', encoding='utf-8') as file:
             json.dump(obj_dict, file, default=self.json_serializable)
-
 
     def json_serializable(self, obj):
         """
