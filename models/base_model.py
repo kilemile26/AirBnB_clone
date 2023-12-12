@@ -1,7 +1,13 @@
 #!/usr/bin/python3
+"""
+Module: base_model
+Defines the BaseModel class.
+"""
+
 
 from datetime import datetime
 import uuid
+from models import storage
 
 class BaseModel:
     """
@@ -22,19 +28,30 @@ class BaseModel:
         Initializes a new instance of the BaseModel class.
         """
 
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = self.created_at
+        if kwargs:
+            for key, value in kwargs.items():
+                if key != '__class__':
+                    if key in ['created_at', 'updated_at']:
+                        value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
+                    setattr(self, key, value)
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = self.created_at
+
+            #Call new(self) method on storage if it's a new instance
+            storage.new(self)
 
 
     def __str__(self):
         """
-        Returns a string representation of the instance.
+        Returns a string representation of the BaseModel instance.
 
         Format: [<class name>] (<self.id>) <self.__dict__>
         """
 
-        return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
+        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
+        #return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
 
 
     def save(self):
@@ -43,11 +60,12 @@ class BaseModel:
         """
 
         self.updated_at = datetime.now()
+        storage.save()
 
 
     def to_dict(self):
         """
-        Returns a dictionary representation of the instance.
+        Returns a dictionary representation containing all keys/values of __dict__ of the instance.
 
         Keys:
         - __class__: Class name of the object.
@@ -62,27 +80,3 @@ class BaseModel:
                 'updated_at': self.updated_at.isoformat()
                 **self.__dict__
                 }
-
-
-    @classmethod
-    def from_dict(cls, dict_repr):
-        """
-        Create a new instance of the model from a dictionary representation.
-
-        :param dict_repr: Dictionary representation of the model.
-        :return: New instance of the model.
-        """
-        if '__class__' in dict_repr:
-            del dict_repr['__class__']
-
-        if len(dict_repr) > 0:
-            # Convert created_at and updated_at to datetime objects
-            for key in ('created_at', 'updated_at'):
-                if key in dict_repr:
-                    dict_repr[key] = datetime.strptime(dict_repr[key], '%Y-%m-%dT%H:%M:%S.%f')
-
-            # Create the instance
-            return cls(**dict_repr)
-        else:
-            # Create a new instance with default values
-            return cls()
