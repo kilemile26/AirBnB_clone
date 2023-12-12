@@ -4,8 +4,8 @@ Module: file_storage
 Defines the FileStorage class.
 """
 
-import os
 import json
+from datetime import datetime
 from models.base_model import BaseModel
 from models.user import User
 from models.place import Place
@@ -42,7 +42,17 @@ class FileStorage:
         """
         obj_dict = {key: obj.to_dict() for key, obj in self.__objects.items()}
         with open(self.__file_path, 'w', encoding='utf-8') as file:
-            json.dump(obj_dict, file)
+            json.dump(obj_dict, file, default=self.json_serializable)
+
+
+    def json_serializable(self, obj):
+        """
+        custom method for JSON serialization of datetime objects
+        """
+
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        raise TypeError("Type not serializable")
 
     def reload(self):
         """

@@ -8,7 +8,11 @@ import cmd
 from models import storage
 from models.base_model import BaseModel
 from models.user import User
-
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 class HBNBCommand(cmd.Cmd):
     """
@@ -39,10 +43,12 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, arg):
         """
-        Create command to create a new instance.
+        Create command to create a new instance of a class, saves it and prints the id.
         """
-        if not arg:
-            print("** class name missing **")
+        args = arg.split()
+        if not arg or args[0] not in valid_classes:
+            print("** class missing **")
+            return
         else:
             try:
                 new_instance = eval(arg)()
@@ -146,10 +152,17 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
             except NameError:
                 print("** class doesn't exist **")
-    class_dict = {
-            'BaseModel': BaseModel,
-            'User': User,
-            }
+
+
+    class_dict = [
+            'BaseModel',
+            'User',
+            'Place',
+            'State',
+            'City',
+            'Amenity',
+            'Review',
+            ]
 
 
 if __name__ == '__main__':

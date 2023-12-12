@@ -10,7 +10,7 @@ class City(BaseModel):
     City class with public class attributes: state_id, name
     """
 
-    def def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """
         Constructor method to initialize City instance
         """

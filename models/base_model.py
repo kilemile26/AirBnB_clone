@@ -8,7 +8,7 @@ Defines the BaseModel class.
 
 from datetime import datetime
 import uuid
-from models import storage
+
 
 class BaseModel:
     """
@@ -38,7 +38,7 @@ class BaseModel:
             for key, value in kwargs.items():
                 if key != '__class__':
                     if key == 'created_at' or key == 'updated_at':
-                        setattr(self, key, datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
+                        setattr(self, key, datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f'))
                     else:
                         setattr(self, key, value)
         else:
@@ -46,6 +46,7 @@ class BaseModel:
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
             #Call new(self) method on storage if it's a new instance
+            from models import storage
             storage.new(self)
 
 
@@ -66,6 +67,7 @@ class BaseModel:
         """
 
         self.updated_at = datetime.now()
+        from models import storage
         storage.save()
 
 
@@ -83,6 +85,6 @@ class BaseModel:
                 '__class__': self.__class__.__name__,
                 'id': self.id,
                 'created_at': self.created_at.isoformat(),
-                'updated_at': self.updated_at.isoformat()
+                'updated_at': self.updated_at.isoformat(),
                 **self.__dict__
                 }
