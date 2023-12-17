@@ -1,0 +1,14 @@
+h1 {
+  background-color: white;
+  height: 70px;
+  width: 100%;
+  border-bottom: solid 1px #CCCCCC;
+}
+header .logo {
+  float: left;
+  vertical-align: middle;
+  margin-left: 20px;
+  background-image: url("images/logo.png");
+  background-repeat: no-repeat;
+  background-position: 0 50%;
+}
